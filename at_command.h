@@ -57,10 +57,10 @@
 \
 	_( AT_CSSN,         "AT+CSSN") \
 	_( AT_CUSD,         "AT+CUSD") \
-	_( AT_CVOICE,       "AT^CVOICE") \
+	_( AT_CVOICE,       "AT+QPCMV?") \
 	_( AT_D,            "ATD") \
 \
-	_( AT_DDSETEX,      "AT^DDSETEX") \
+	_( AT_DDSETEX,      "AT+QPCMV=1,0") \
 	_( AT_DTMF,         "AT^DTMF") \
 	_( AT_E,            "ATE") \
 \

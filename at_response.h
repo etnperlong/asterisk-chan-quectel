@@ -56,7 +56,7 @@ struct iovec;
 	_( SMS_PROMPT,  "> ",           "> ") \
 	_( SRVST,       "^SRVST",       "^SRVST:") \
 \
-	_( CVOICE,      "^CVOICE",      "^CVOICE:") \
+	_( CVOICE,      "+QPCMV",      "+QPCMV:") \
 	_( CMGS,        "+CMGS",        "+CMGS:") \
 	_( CPMS,        "+CPMS",        "+CPMS:") \
 	_( CSCA,        "+CSCA",        "+CSCA:") \
