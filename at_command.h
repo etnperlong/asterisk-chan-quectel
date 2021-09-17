@@ -74,6 +74,14 @@
 	_( AT_CHLD_2,       "AT+CHLD=2") \
 	_( AT_CHLD_3,       "AT+CHLD=3") \
 	_( AT_CLCC,         "AT+CLCC") \
+\
+	_( AT_QURCCFG,      "AT+QURCCFG=\"urcport\"") \
+	_( AT_QINDCFG_ALL,  "AT+QINDCFG=\"all\"") \
+	_( AT_QINDCFG_CSQ,  "AT+QINDCFG=\"csq\"") \
+	_( AT_QINDCFG_RING, "AT+QINDCFG=\"ring\"") \
+	_( AT_QINDCFG_SMS,  "AT+QINDCFG=\"smsincoming\"") \
+\
+	_( AT_DSCI,         "AT^DSCI") \
 /* AT_COMMANDS_TABLE */
 
 typedef enum {
