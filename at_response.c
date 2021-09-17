@@ -251,6 +251,22 @@ static int at_response_ok (struct pvt* pvt, at_res_t res)
 				break;
 			case CMD_USER:
 				break;
+
+			case CMD_AT_QURCCFG:
+				ast_debug (1, "[%s] Change Quectel AT output to USBtty\n", PVT_ID(pvt));
+				break;
+
+			case CMD_AT_QINDCFG_ALL:
+			case CMD_AT_QINDCFG_CSQ:
+			case CMD_AT_QINDCFG_RING:
+			case CMD_AT_QINDCFG_SMS:
+				ast_debug (1, "[%s] Set Quectel indication service successfully\n", PVT_ID(pvt));
+				break;
+
+			case CMD_AT_DSCI:
+				ast_debug (1, "[%s] Quectel internal response for DSCI enabled\n", PVT_ID(pvt));
+				break;
+			
 			default:
 				ast_log (LOG_ERROR, "[%s] Received 'OK' for unhandled command '%s'\n", PVT_ID(pvt), at_cmd2str (ecmd->cmd));
 				break;
@@ -511,6 +527,21 @@ static int at_response_error (struct pvt* pvt, at_res_t res)
 			case CMD_AT_CUSD:
 				ast_verb (3, "[%s] Error sending USSD %p\n", PVT_ID(pvt), task);
 				log_cmd_response_error(pvt, ecmd, "[%s] Error sending USSD %p\n", PVT_ID(pvt), task);
+				break;
+
+			case CMD_AT_QURCCFG:
+				log_cmd_response_error(pvt, ecmd, "[%s] Error changing Quectel AT output to USBtty\n", PVT_ID(pvt))
+				break;
+
+			case CMD_AT_QINDCFG_ALL:
+			case CMD_AT_QINDCFG_CSQ:
+			case CMD_AT_QINDCFG_RING:
+			case CMD_AT_QINDCFG_SMS:
+				log_cmd_response_error(pvt, ecmd, "[%s] Error setting Quectel indication service\n", PVT_ID(pvt))
+				break;
+
+			case CMD_AT_DSCI:
+				log_cmd_response_error(pvt, ecmd, "[%s] Error enabling Quectel internal response for DSCI\n", PVT_ID(pvt))
 				break;
 
 			default:
