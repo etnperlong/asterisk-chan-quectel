@@ -31,6 +31,7 @@ struct iovec;
 \
 	_( CONF,        "^CONF",        "^CONF:") \
 	_( CONN,        "^CONN",        "^CONN:") \
+	_( DSCI,        "^DSCI",        "^DSCI:") \
 	_( COPS,        "+COPS",        "+COPS:") \
 	_( CPIN,        "+CPIN",        "+CPIN:") \
 \

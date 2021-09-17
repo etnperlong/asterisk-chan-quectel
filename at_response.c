@@ -448,7 +448,7 @@ static int at_response_error (struct pvt* pvt, at_res_t res)
 				break;
 
 			case CMD_AT_DDSETEX:
-				log_cmd_response_error(pvt, ecmd, "[%s] AT^DDSETEX failed\n", PVT_ID(pvt));
+				log_cmd_response_error(pvt, ecmd, "[%s] AT+QPCMV=1,0 failed\n", PVT_ID(pvt));
 				break;
 
 			case CMD_AT_CHUP:
@@ -754,6 +754,156 @@ static int at_response_cend (struct pvt * pvt, const char* str)
 //		ast_log (LOG_ERROR, "[%s] CEND event for unknown call idx '%d'\n", PVT_ID(pvt), call_index);
 	}
 
+	return 0;
+}
+
+/*!
+ * \brief Handle ^DSCI response (Quectel Internal command)
+ * \param pvt -- pvt structure
+ * \param str -- string containing response (null terminated)
+ * \param len -- string lenght
+ * \retval  0 success
+ * \retval -1 error
+ */
+static int at_response_dsci (struct pvt * pvt, const char* str)
+{
+	int call_index = 0;
+	int call_direction = 0;
+	int call_state = 0;
+	int call_type = 0;
+	int number     = 0;
+	int num_type = 0;
+	struct cpvt * cpvt;
+
+	request_clcc(pvt);
+
+	/*
+	 * parse DSCI info in the following format:
+	 * ^DSCI: <call_index>,<call_direction>,<call_state>,<call_type>,<number>,<num_type>
+	 */
+
+	if (sscanf (str, "^DSCI:%d,%d,%d,%d,%d,%d", &call_index, &call_direction, &call_state, &call_type, &number, &num_type) != 6)
+	{
+		ast_debug (1, "[%s] Could not parse all DSCI parameters\n", PVT_ID(pvt));
+	}
+
+	ast_debug (1,	"[%s] DSCI: call_index %d call_direction %d call_state %d call_type %d number %d num_type %d \n"
+				, PVT_ID(pvt), call_index, call_direction, call_state, call_type, number, num_type);
+
+	if (call_type == CLCC_CALL_TYPE_VOICE) {
+		switch(call_state) // TODO: Define As ENUM
+		{
+			case 1: // CALL_LOCAL_HOLD
+				ast_debug (1,	"[%s] DSCI CALL_LOCAL_HOLD: call_index %d call_direction %d call_state %d call_type %d number %d num_type %d \n"
+				, PVT_ID(pvt), call_index, call_direction, call_state, call_type, number, num_type);
+				
+				cpvt = pvt_find_cpvt(pvt, call_index);
+				if(cpvt)
+				{
+					channel_change_state(cpvt, CALL_STATE_ONHOLD, 0);
+				}
+				return 0;
+				break;
+
+			case 2: // CALL_ORIGINAL (Dial out)
+				ast_debug (1,	"[%s] DSCI CALL_ORIGINAL: call_index %d call_direction %d call_state %d call_type %d number %d num_type %d \n"
+				, PVT_ID(pvt), call_index, call_direction, call_state, call_type, number, num_type);
+				
+				cpvt = pvt_find_cpvt(pvt, call_index);
+				cpvt->call_idx = call_index;
+				change_channel_state(cpvt, CALL_STATE_DIALING, 0);
+				/* TODO: move to CONN ? */
+				if(pvt->volume_sync_step == VOLUME_SYNC_BEGIN)
+				{
+					pvt->volume_sync_step = VOLUME_SYNC_BEGIN;
+					if (at_enqueue_volsync(cpvt))
+					{
+						ast_log (LOG_ERROR, "[%s] Error synchronize audio level\n", PVT_ID(pvt));
+					}
+					else
+						pvt->volume_sync_step++;
+				}
+				request_clcc(pvt);
+				break;
+
+			case 3: // CALL_CONNECT (Call active)
+				ast_debug (1,	"[%s] DSCI CALL_CONNECT: call_index %d call_direction %d call_state %d call_type %d number %d num_type %d \n"
+				, PVT_ID(pvt), call_index, call_direction, call_state, call_type, number, num_type);
+				
+				cpvt = pvt_find_cpvt(pvt, call_index);
+				if(cpvt)
+				{
+					/* FIXME: delay until CLCC handle?
+					*/
+					PVT_STAT(pvt, calls_answered[cpvt->dir]) ++;
+					change_channel_state(cpvt, CALL_STATE_ACTIVE, 0);
+					if(CPVT_TEST_FLAG(cpvt, CALL_FLAG_CONFERENCE))
+						at_enqueue_conference(cpvt);
+				}
+				else
+				{
+					at_enqueue_hangup(&pvt->sys_chan, call_index);
+					ast_log (LOG_ERROR, "[%s] answered incoming call with not exists call idx %d, hanging up!\n", PVT_ID(pvt), call_index);
+				}
+				return 0;
+				break;
+
+			case 4: // CALL_INCOMING (Ring)
+				ast_debug (1,	"[%s] DSCI CALL_INCOMING: call_index %d call_direction %d call_state %d call_type %d number %d num_type %d \n"
+				, PVT_ID(pvt), call_index, call_direction, call_state, call_type, number, num_type);
+				
+				// Process with at_response_ring, ignore
+				// TODO: Migrate RING to ^DSCI URC Later
+				break;
+
+			case 5: // CALL_WAITING
+				ast_debug (1,	"[%s] DSCI CALL_WAITING: call_index %d call_direction %d call_state %d call_type %d number %d num_type %d \n"
+				, PVT_ID(pvt), call_index, call_direction, call_state, call_type, number, num_type);
+				cpvt = pvt_find_cpvt(pvt, call_index);
+				if(cpvt)
+				{
+					channel_change_state(cpvt, CALL_STATE_WAITING, 0);
+				}
+				return 0;
+				break;
+
+			case 6: // CALL_END
+				ast_debug (1,	"[%s] DSCI CALL_END: call_index %d call_direction %d call_state %d call_type %d number %d num_type %d \n"
+				, PVT_ID(pvt), call_index, call_direction, call_state, call_type, number, num_type);
+				
+				cpvt = pvt_find_cpvt(pvt, call_index);
+				if (cpvt)
+				{
+					CPVT_RESET_FLAGS(cpvt, CALL_FLAG_NEED_HANGUP);
+					// TODO: Fix Quectel call duration & status
+					PVT_STAT(pvt, calls_duration[cpvt->dir]) += 66;
+					change_channel_state(cpvt, CALL_STATE_RELEASED, 0);
+					manager_event_cend(PVT_ID(pvt), call_index, 66, 0, 0);
+				}
+				else
+				{
+					ast_log (LOG_ERROR, "[%s] CEND event for unknown call idx '%d'\n", PVT_ID(pvt), call_index);
+				}
+				return 0;
+				break;
+
+			case 7: // CALL_ALERTING (Dial out ringing)
+				ast_debug (1,	"[%s] DSCI CALL_ALERTING: call_index %d call_direction %d call_state %d call_type %d number %d num_type %d \n"
+				, PVT_ID(pvt), call_index, call_direction, call_state, call_type, number, num_type);
+				
+				cpvt = pvt_find_cpvt(pvt, call_index);
+				if(cpvt)
+				{
+					channel_change_state(cpvt, CALL_STATE_ALERTING, 0);
+				}
+				return 0;
+				break;
+			
+			default:;
+		}
+	}
+	else
+		ast_log (LOG_ERROR, "[%s] answered not voice incoming call type '%d' idx %d, skipped\n", PVT_ID(pvt), call_type, call_index);
 	return 0;
 }
 
@@ -1872,6 +2022,9 @@ int at_response (struct pvt* pvt, const struct iovec iov[2], int iovcnt, at_res_
 
 			case RES_CONN:
 				return at_response_conn (pvt, str);
+
+			case RES_DSCI:
+				return at_response_dsci (pvt, str);
 
 			case RES_CREG:
 				/* An error here is not fatal. Just keep going. */
