@@ -185,7 +185,7 @@ EXPORT_DEF int at_enqueue_initialization(struct cpvt *cpvt, at_cmd_t from_comman
 		ATQ_CMD_DECLARE_ST(CMD_AT_QINDCFG_RING, cmd28),
 		ATQ_CMD_DECLARE_ST(CMD_AT_QINDCFG_SMS, cmd29),
 
-		ATQ_CMD_DECLARE_ST(AT_DSCI, cmd30),
+		ATQ_CMD_DECLARE_ST(CMD_AT_DSCI, cmd30),
 		};
 	unsigned in, out;
 	int begin = -1;
