@@ -701,7 +701,7 @@ static int at_response_conf (struct pvt* pvt, const char* str)
 	cpvt = pvt_find_cpvt(pvt, call_index);
 	if(cpvt)
 	{
-		channel_change_state(cpvt, CALL_STATE_ALERTING, 0);
+		change_channel_state(cpvt, CALL_STATE_ALERTING, 0);
 	}
 
 	return 0;
@@ -800,7 +800,7 @@ static int at_response_dsci (struct pvt * pvt, const char* str)
 				cpvt = pvt_find_cpvt(pvt, call_index);
 				if(cpvt)
 				{
-					channel_change_state(cpvt, CALL_STATE_ONHOLD, 0);
+					change_channel_state(cpvt, CALL_STATE_ONHOLD, 0);
 				}
 				return 0;
 				break;
@@ -862,7 +862,7 @@ static int at_response_dsci (struct pvt * pvt, const char* str)
 				cpvt = pvt_find_cpvt(pvt, call_index);
 				if(cpvt)
 				{
-					channel_change_state(cpvt, CALL_STATE_WAITING, 0);
+					change_channel_state(cpvt, CALL_STATE_WAITING, 0);
 				}
 				return 0;
 				break;
@@ -894,7 +894,7 @@ static int at_response_dsci (struct pvt * pvt, const char* str)
 				cpvt = pvt_find_cpvt(pvt, call_index);
 				if(cpvt)
 				{
-					channel_change_state(cpvt, CALL_STATE_ALERTING, 0);
+					change_channel_state(cpvt, CALL_STATE_ALERTING, 0);
 				}
 				return 0;
 				break;
