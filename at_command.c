@@ -179,11 +179,11 @@ EXPORT_DEF int at_enqueue_initialization(struct cpvt *cpvt, at_cmd_t from_comman
 		ATQ_CMD_DECLARE_ST(CMD_AT_CNMI, cmd23),		/* New SMS Notification Setting +CNMI=[<mode>[,<mt>[,<bm>[,<ds>[,<bfr>]]]]] */
 		ATQ_CMD_DECLARE_ST(CMD_AT_CSQ, cmd24),		/* Query Signal quality */
 
-		ATQ_CMD_DECLARE_ST(AT_QURCCFG, cmd25),  /* Configuration Quectel URC output port to USB TTy*/
-		ATQ_CMD_DECLARE_ST(AT_QINDCFG_ALL, cmd26),
-		ATQ_CMD_DECLARE_ST(AT_QINDCFG_CSQ, cmd27),
-		ATQ_CMD_DECLARE_ST(AT_QINDCFG_RING, cmd28),
-		ATQ_CMD_DECLARE_ST(AT_QINDCFG_SMS, cmd29),
+		ATQ_CMD_DECLARE_ST(CMD_AT_QURCCFG, cmd25),  /* Configuration Quectel URC output port to USB TTy*/
+		ATQ_CMD_DECLARE_ST(CMD_AT_QINDCFG_ALL, cmd26),
+		ATQ_CMD_DECLARE_ST(CMD_AT_QINDCFG_CSQ, cmd27),
+		ATQ_CMD_DECLARE_ST(CMD_AT_QINDCFG_RING, cmd28),
+		ATQ_CMD_DECLARE_ST(CMD_AT_QINDCFG_SMS, cmd29),
 
 		ATQ_CMD_DECLARE_ST(AT_DSCI, cmd30),
 		};
