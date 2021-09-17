@@ -179,13 +179,13 @@ EXPORT_DEF int at_enqueue_initialization(struct cpvt *cpvt, at_cmd_t from_comman
 		ATQ_CMD_DECLARE_ST(CMD_AT_CNMI, cmd23),		/* New SMS Notification Setting +CNMI=[<mode>[,<mt>[,<bm>[,<ds>[,<bfr>]]]]] */
 		ATQ_CMD_DECLARE_ST(CMD_AT_CSQ, cmd24),		/* Query Signal quality */
 
-		ATQ_CMD_DECLARE_ST(CMD_AT_QURCCFG, cmd25),  /* Configuration Quectel URC output port to USB TTy*/
-		ATQ_CMD_DECLARE_ST(CMD_AT_QINDCFG_ALL, cmd26),
-		ATQ_CMD_DECLARE_ST(CMD_AT_QINDCFG_CSQ, cmd27),
-		ATQ_CMD_DECLARE_ST(CMD_AT_QINDCFG_RING, cmd28),
-		ATQ_CMD_DECLARE_ST(CMD_AT_QINDCFG_SMS, cmd29),
+		ATQ_CMD_DECLARE_ST(CMD_AT_QURCCFG, cmd25),  /* Quectel URC output port to USB TTY */
+		ATQ_CMD_DECLARE_ST(CMD_AT_QINDCFG_ALL, cmd26),  /* Quectel URC show all information */
+		ATQ_CMD_DECLARE_ST(CMD_AT_QINDCFG_CSQ, cmd27),  /* Disable CSQ Ping */
+		ATQ_CMD_DECLARE_ST(CMD_AT_QINDCFG_RING, cmd28), /* Ring */
+		ATQ_CMD_DECLARE_ST(CMD_AT_QINDCFG_SMS, cmd29),  /* SMS Incoming */
 
-		ATQ_CMD_DECLARE_ST(CMD_AT_DSCI, cmd30),
+		ATQ_CMD_DECLARE_ST(CMD_AT_DSCI, cmd30),  /* Quectel Internal DSCI Command */
 		};
 	unsigned in, out;
 	int begin = -1;
