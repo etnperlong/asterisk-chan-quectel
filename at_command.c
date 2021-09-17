@@ -138,13 +138,13 @@ EXPORT_DEF int at_enqueue_initialization(struct cpvt *cpvt, at_cmd_t from_comman
 	static const char cmd23[] = "AT+CNMI=2,1,0,2,0\r";
 	static const char cmd24[] = "AT+CSQ\r";
 
-	static const char cmd25[] = "AT+QURCCFG=\"urcport\",\"usbat\"\r"
-	static const char cmd26[] = "AT+QINDCFG=\"all\",1,0\r"
-	static const char cmd27[] = "AT+QINDCFG=\"csq\",0,0\r"   // TODO: Add QIND CSQ Response
-	static const char cmd28[] = "AT+QINDCFG=\"ring\",1,0\r"
-	static const char cmd29[] = "AT+QINDCFG=\"smsincoming\",1,0\r"
+	static const char cmd25[] = "AT+QURCCFG=\"urcport\",\"usbat\"\r";
+	static const char cmd26[] = "AT+QINDCFG=\"all\",1,0\r";
+	static const char cmd27[] = "AT+QINDCFG=\"csq\",0,0\r";   // TODO: Add QIND CSQ Response
+	static const char cmd28[] = "AT+QINDCFG=\"ring\",1,0\r";
+	static const char cmd29[] = "AT+QINDCFG=\"smsincoming\",1,0\r";
 
-	static const char cmd30[] = "AT^DSCI=1\r"
+	static const char cmd30[] = "AT^DSCI=1\r";
 
 	static const at_queue_cmd_t st_cmds[] = {
 		ATQ_CMD_DECLARE_ST(CMD_AT, cmd_at),
