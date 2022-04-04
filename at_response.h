@@ -32,6 +32,8 @@ struct iovec;
 	_( ORIG,        "^ORIG",        "^DSCI:") \
 	_( CEND,        "^CEND",        "VOICE CALL:") \
 	_( CONN,        "^CONN",        "^CONN:") \
+	_( DSCI,        "^DSCI",        "^DSCI:") \
+	_( COPS,        "+COPS",        "+COPS:") \
 	_( CPIN,        "+CPIN",        "+CPIN:") \
 \
 	_( CREG,        "+CREG",        "+CREG:") \
